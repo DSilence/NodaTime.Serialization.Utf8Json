@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodaTime.Serialization.Utf8Json", "NodaTime.Serialization.Utf8Json\NodaTime.Serialization.Utf8Json.csproj", "{91DBAEAF-E41E-4AB3-996C-C6107415E88E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DS.NodaTime.Serialization.Utf8Json", "DS.NodaTime.Serialization.Utf8Json\DS.NodaTime.Serialization.Utf8Json.csproj", "{91DBAEAF-E41E-4AB3-996C-C6107415E88E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodaTime.Serialization.Utf8Json.Tests", "NodaTime.Serialization.Utf8Json.Tests\NodaTime.Serialization.Utf8Json.Tests.csproj", "{1AD61E77-DFCF-4293-AB31-5A446307C670}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DS.NodaTime.Serialization.Utf8Json.Tests", "DS.NodaTime.Serialization.Utf8Json.Tests\DS.NodaTime.Serialization.Utf8Json.Tests.csproj", "{1AD61E77-DFCF-4293-AB31-5A446307C670}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\..\build\_build.csproj", "{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,6 +12,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Release|Any CPU.ActiveCfg = Release|Any CPU

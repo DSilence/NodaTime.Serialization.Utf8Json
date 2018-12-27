@@ -1,6 +1,7 @@
 using System;
 using NodaTime.Text;
 using Utf8Json;
+using Utf8Json.Formatters;
 
 namespace NodaTime.Serialization.Utf8Json
 {
@@ -10,29 +11,55 @@ namespace NodaTime.Serialization.Utf8Json
         /// Formatter for instants, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks, and
         /// specifying 'Z' at the end to show it's effectively in UTC.
         /// </summary>
-        public static IJsonFormatter InstantFormatter { get; }
+        public static IJsonFormatter<Instant> InstantFormatter { get; }
             = new NodaPatternFormatter<Instant>(InstantPattern.ExtendedIso);
+
+        /// <summary>
+        /// Formatter for nullable instants, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks, and
+        /// specifying 'Z' at the end to show it's effectively in UTC.
+        /// </summary>
+        public static IJsonFormatter<Instant?> NullableInstantFormatter { get; }
+            = new StaticNullableFormatter<Instant>(InstantFormatter);
 
         /// <summary>
         /// Formatter for local dates, using the ISO-8601 date pattern.
         /// </summary>
-        public static IJsonFormatter LocalDateFormatter { get; }
+        public static IJsonFormatter<LocalDate> LocalDateFormatter { get; }
             = new NodaPatternFormatter<LocalDate>(
                 LocalDatePattern.Iso, CreateIsoValidator<LocalDate>(x => x.Calendar));
+
+        /// <summary>
+        /// Formatter for nullable local dates, using the ISO-8601 date pattern.
+        /// </summary>
+        public static IJsonFormatter NullableLocalDateFormatter { get; }
+            = new StaticNullableFormatter<LocalDate>(LocalDateFormatter);
 
         /// <summary>
         /// Formatter for local dates and times, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks.
         /// No time zone designator is applied.
         /// </summary>
-        public static IJsonFormatter LocalDateTimeFormatter { get; }
+        public static IJsonFormatter<LocalDateTime> LocalDateTimeFormatter { get; }
             = new NodaPatternFormatter<LocalDateTime>(
                 LocalDateTimePattern.ExtendedIso, CreateIsoValidator<LocalDateTime>(x => x.Calendar));
 
         /// <summary>
+        /// Formatter for nullable local dates and times, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks.
+        /// No time zone designator is applied.
+        /// </summary>
+        public static IJsonFormatter<LocalDateTime?> NullableLocalDateTimeFormatter { get; }
+            = new StaticNullableFormatter<LocalDateTime>(LocalDateTimeFormatter);
+
+        /// <summary>
         /// Formatter for local times, using the ISO-8601 time pattern, extended as required to accommodate milliseconds and ticks.
         /// </summary>
-        public static IJsonFormatter LocalTimeFormatter { get; }
+        public static IJsonFormatter<LocalTime> LocalTimeFormatter { get; }
             = new NodaPatternFormatter<LocalTime>(LocalTimePattern.ExtendedIso);
+
+        /// <summary>
+        /// Formatter for nullable local times, using the ISO-8601 time pattern, extended as required to accommodate milliseconds and ticks.
+        /// </summary>
+        public static IJsonFormatter<LocalTime?> NullableLocalTimeFormatter { get; }
+            = new StaticNullableFormatter<LocalTime>(LocalTimeFormatter);
 
         /// <summary>
         /// Formatter for intervals. This must be used in a serializer which also has an instant converter.
@@ -44,6 +71,11 @@ namespace NodaTime.Serialization.Utf8Json
         /// </summary>
         public static IJsonFormatter IsoIntervalFormatter { get; }
             = new NodaIsoIntervalFormatter();
+
+        /// <summary>
+        /// Formatter for nullable intervals.
+        /// </summary>
+        public static IJsonFormatter<Interval?> NullableIntervalFormatter { get; } = new NullableFormatter<Interval>();
 
         /// <summary>
         /// Formatter for date intervals. This must be used in a serializer which also has a local date converter.
@@ -59,18 +91,30 @@ namespace NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for offsets.
         /// </summary>
-        public static IJsonFormatter OffsetFormatter { get; }
+        public static IJsonFormatter<Offset> OffsetFormatter { get; }
             = new NodaPatternFormatter<Offset>(OffsetPattern.GeneralInvariant);
+
+        /// <summary>
+        /// Formatter for nullable offsets.
+        /// </summary>
+        public static IJsonFormatter<Offset?> NullableOffsetFormatter { get; }
+            = new StaticNullableFormatter<Offset>(OffsetFormatter);
 
         /// <summary>
         /// Formatter for offset date/times.
         /// </summary>
-        public static IJsonFormatter OffsetDateTimeFormatter { get; } =
+        public static IJsonFormatter<OffsetDateTime> OffsetDateTimeFormatter { get; } =
             new NodaPatternFormatter<OffsetDateTime>(
                 OffsetDateTimePattern.Rfc3339, CreateIsoValidator<OffsetDateTime>(x => x.Calendar));
 
         /// <summary>
-        /// Creates a converter for zoned date/times, using the given time zone provider.
+        /// Formatter for nullable offset date/times.
+        /// </summary>
+        public static IJsonFormatter<OffsetDateTime?> NullableOffsetDateTimeFormatter { get; } =
+            new StaticNullableFormatter<OffsetDateTime>(OffsetDateTimeFormatter);
+
+        /// <summary>
+        /// Creates a formatter for zoned date/times, using the given time zone provider.
         /// </summary>
         /// <param name="provider">The time zone provider to use when parsing.</param>
         /// <returns>A converter to handle <see cref="ZonedDateTime"/>.</returns>
@@ -81,10 +125,25 @@ namespace NodaTime.Serialization.Utf8Json
 
 
         /// <summary>
-        /// Converter for durations.
+        /// Creates a nullable formatter for zoned date/times, using the given time zone provider.
         /// </summary>
-        public static IJsonFormatter DurationFormatter { get; }
+        /// <param name="provider">The time zone provider to use when parsing.</param>
+        /// <returns>A converter to handle <see cref="ZonedDateTime"/>.</returns>
+        public static IJsonFormatter<ZonedDateTime?> CreateNullableZonedDateTimeFormatter(IDateTimeZoneProvider provider) =>
+            new StaticNullableFormatter<ZonedDateTime>(CreateZonedDateTimeFormatter(provider));
+
+
+        /// <summary>
+        /// Formatter for durations.
+        /// </summary>
+        public static IJsonFormatter<Duration> DurationFormatter { get; }
             = new NodaPatternFormatter<Duration>(DurationPattern.CreateWithInvariantCulture("-H:mm:ss.FFFFFFFFF"));
+
+        /// <summary>
+        /// Formatter for nullable durations.
+        /// </summary>
+        public static IJsonFormatter<Duration?> NullableDurationFormatter { get; }
+            = new StaticNullableFormatter<Duration>(DurationFormatter);
 
         /// <summary>
         /// Round-tripping converter for periods. Use this when you really want to preserve information,

@@ -1,6 +1,5 @@
 ﻿using System;
 using NodaTime.Text;
-using NodaTime.Utility;
 using Utf8Json;
 
 namespace NodaTime.Serialization.Utf8Json

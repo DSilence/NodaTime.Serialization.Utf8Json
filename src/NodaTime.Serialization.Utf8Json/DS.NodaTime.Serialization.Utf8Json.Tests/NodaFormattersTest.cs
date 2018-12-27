@@ -1,12 +1,14 @@
 ﻿using System;
-using Newtonsoft.Json;
+using Utf8Json;
+using Utf8Json.Formatters;
+using Utf8Json.Resolvers;
 using Xunit;
 using static NodaTime.Serialization.Utf8Json.Tests.TestHelper;
 
 namespace NodaTime.Serialization.Utf8Json.Tests
 {
      /// <summary>
-    /// Tests for the converters exposed in NodaFormatters.
+    /// Tests for the formatters exposed in NodaFormatters.
     /// </summary>
     public class NodaFormattersTest
     {
@@ -14,7 +16,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void OffsetFormatter()
         {
             var value = Offset.FromHoursAndMinutes(5, 30);
-            string json = "\"+05:30\"";
+            var json = "\"+05:30\"";
             AssertConversions(value, json, NodaFormatters.OffsetFormatter);
         }
 
@@ -22,35 +24,35 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void InstantFormatter()
         {
             var value = Instant.FromUtc(2012, 1, 2, 3, 4, 5);
-            string json = "\"2012-01-02T03:04:05Z\"";
+            var json = "\"2012-01-02T03:04:05Z\"";
             AssertConversions(value, json, NodaFormatters.InstantFormatter);
         }
 
-        /*[Fact]
+        [Fact]
         public void InstantFormatter_EquivalentToIsoDateTimeFormatter()
         {
             var dateTime = new DateTime(2012, 1, 2, 3, 4, 5, DateTimeKind.Utc);
             var instant = Instant.FromDateTimeUtc(dateTime);
-            var jsonDateTime = JsonConvert.SerializeObject(dateTime, new IsoDateTimeFormatter());
-            var jsonInstant = JsonConvert.SerializeObject(instant, Formatting.None, NodaFormatters.InstantFormatter);
-            Assert.AreEqual(jsonDateTime, jsonInstant);
-        }*/
+            var jsonDateTime = JsonSerializer.ToJsonString(dateTime, CompositeResolver.Create(new ISO8601DateTimeFormatter()));
+            var jsonInstant = JsonSerializer.ToJsonString(instant, CompositeResolver.Create(NodaFormatters.InstantFormatter));
+            Assert.Equal(jsonDateTime, jsonInstant);
+        }
 
         [Fact]
         public void LocalDateFormatter()
         {
             var value = new LocalDate(2012, 1, 2, CalendarSystem.Iso);
-            string json = "\"2012-01-02\"";
+            var json = "\"2012-01-02\"";
             AssertConversions(value, json, NodaFormatters.LocalDateFormatter);
         }
 
-        /*[Fact]
+        [Fact]
         public void LocalDateFormatter_SerializeNonIso_Throws()
         {
             var localDate = new LocalDate(2012, 1, 2, CalendarSystem.Coptic);
 
-            Assert.Throws<ArgumentException>(() => JsonConvert.SerializeObject(localDate, Formatting.None, NodaFormatters.LocalDateFormatter));
-        }*/
+            Assert.Throws<ArgumentException>(() => JsonSerializer.ToJsonString(localDate, CompositeResolver.Create(NodaFormatters.LocalDateFormatter)));
+        }
 
         [Fact]
         public void LocalDateTimeFormatter()
@@ -60,25 +62,25 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             AssertConversions(value, json, NodaFormatters.LocalDateTimeFormatter);
         }
 
-        /*[Fact]
+        [Fact(Skip = "Default UTF8Json formatter leaves wierd trailing 0.")]
         public void LocalDateTimeFormatter_EquivalentToIsoDateTimeFormatter()
         {
             var dateTime = new DateTime(2012, 1, 2, 3, 4, 5, 6, DateTimeKind.Unspecified);
             var localDateTime = new LocalDateTime(2012, 1, 2, 3, 4, 5, 6, CalendarSystem.Iso);
 
-            var jsonDateTime = JsonConvert.SerializeObject(dateTime, new IsoDateTimeFormatter());
-            var jsonLocalDateTime = JsonConvert.SerializeObject(localDateTime, Formatting.None, NodaFormatters.LocalDateTimeFormatter);
+            var jsonDateTime = JsonSerializer.ToJsonString(dateTime, CompositeResolver.Create(new ISO8601DateTimeFormatter()));
+            var jsonLocalDateTime = JsonSerializer.ToJsonString(localDateTime, CompositeResolver.Create(NodaFormatters.LocalDateTimeFormatter));
 
-            Assert.AreEqual(jsonDateTime, jsonLocalDateTime);
-        }*/
+            Assert.Equal(jsonDateTime, jsonLocalDateTime);
+        }
 
-        /*[Fact]
+        [Fact]
         public void LocalDateTimeFormatter_SerializeNonIso_Throws()
         {
             var localDateTime = new LocalDateTime(2012, 1, 2, 3, 4, 5, CalendarSystem.Coptic);
 
-            Assert.Throws<ArgumentException>(() => JsonConvert.SerializeObject(localDateTime, Formatting.None, NodaFormatters.LocalDateTimeFormatter));
-        }*/
+            Assert.Throws<ArgumentException>(() => JsonSerializer.ToJsonString(localDateTime, CompositeResolver.Create(NodaFormatters.LocalDateTimeFormatter)));
+        }
 
         [Fact]
         public void LocalTimeFormatter()
@@ -88,11 +90,11 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             AssertConversions(value, json, NodaFormatters.LocalTimeFormatter);
         }
 
-        /*[Fact]
+        [Fact]
         public void RoundtripPeriodFormatter()
         {
             var value = Period.FromDays(2) + Period.FromHours(3) + Period.FromMinutes(90);
-            string json = "\"P2DT3H90M\"";
+            var json = "\"P2DT3H90M\"";
             AssertConversions(value, json, NodaFormatters.RoundtripPeriodFormatter);
         }
 
@@ -101,9 +103,9 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             // Can't use AssertConversions here, as it doesn't round-trip
             var period = Period.FromDays(2) + Period.FromHours(3) + Period.FromMinutes(90);
-            var json = JsonConvert.SerializeObject(period, Formatting.None, NodaFormatters.NormalizingIsoPeriodFormatter);
-            string expectedJson = "\"P2DT4H30M\"";
-            Assert.AreEqual(expectedJson, json);
+            var json = JsonSerializer.ToJsonString(period, CompositeResolver.Create(NodaFormatters.NormalizingIsoPeriodFormatter));
+            var expectedJson = "\"P2DT4H30M\"";
+            Assert.Equal(expectedJson, json);
         }
 
         [Fact]
@@ -111,9 +113,9 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             // This time we're okay as it's already a normalized value.
             var value = Period.FromDays(2) + Period.FromHours(4) + Period.FromMinutes(30);
-            string json = "\"P2DT4H30M\"";
+            var json = "\"P2DT4H30M\"";
             AssertConversions(value, json, NodaFormatters.NormalizingIsoPeriodFormatter);
-        }*/
+        }
 
         [Fact]
         public void ZonedDateTimeFormatter()
@@ -122,8 +124,8 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var zone = DateTimeZoneProviders.Tzdb["Europe/London"];
             var earlierValue = new ZonedDateTime(new LocalDateTime(2012, 10, 28, 1, 30), zone, Offset.FromHours(1));
             var laterValue = new ZonedDateTime(new LocalDateTime(2012, 10, 28, 1, 30), zone, Offset.FromHours(0));
-            string earlierJson = "\"2012-10-28T01:30:00+01 Europe/London\"";
-            string laterJson = "\"2012-10-28T01:30:00Z Europe/London\"";
+            var earlierJson = "\"2012-10-28T01:30:00+01 Europe/London\"";
+            var laterJson = "\"2012-10-28T01:30:00Z Europe/London\"";
             var converter = NodaFormatters.CreateZonedDateTimeFormatter(DateTimeZoneProviders.Tzdb);
 
             AssertConversions(earlierValue, earlierJson, converter);
@@ -134,7 +136,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void OffsetDateTimeFormatter()
         {
             var value = new LocalDateTime(2012, 1, 2, 3, 4, 5).PlusNanoseconds(123456789).WithOffset(Offset.FromHoursAndMinutes(-1, -30));
-            string json = "\"2012-01-02T03:04:05.123456789-01:30\"";
+            var json = "\"2012-01-02T03:04:05.123456789-01:30\"";
             AssertConversions(value, json, NodaFormatters.OffsetDateTimeFormatter);
         }
 
@@ -144,7 +146,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             // Redundantly specify the minutes, so that Javascript can parse it and it's RFC3339-compliant.
             // See issue 284 for details.
             var value = new LocalDateTime(2012, 1, 2, 3, 4, 5).PlusNanoseconds(123456789).WithOffset(Offset.FromHours(5));
-            string json = "\"2012-01-02T03:04:05.123456789+05:00\"";
+            var json = "\"2012-01-02T03:04:05.123456789+05:00\"";
             AssertConversions(value, json, NodaFormatters.OffsetDateTimeFormatter);
         }
 
@@ -154,7 +156,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             // Redundantly specify the minutes, so that Javascript can parse it and it's RFC3339-compliant.
             // See issue 284 for details.
             var value = new LocalDateTime(2012, 1, 2, 3, 4, 5).PlusNanoseconds(123456789).WithOffset(Offset.Zero);
-            string json = "\"2012-01-02T03:04:05.123456789Z\"";
+            var json = "\"2012-01-02T03:04:05.123456789Z\"";
             AssertConversions(value, json, NodaFormatters.OffsetDateTimeFormatter);
         }
 
@@ -180,15 +182,15 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             AssertConversions(Duration.FromTicks(long.MinValue), "\"-256204778:48:05.4775808\"", NodaFormatters.DurationFormatter);
         }
 
-        /*/// <summary>
+        /// <summary>
         /// The pre-release converter used either 3 or 7 decimal places for fractions of a second; never less.
         /// This test checks that the "new" converter (using DurationPattern) can still parse the old output.
         /// </summary>
         [Fact]
         public void Duration_ParsePartialFractionalSecondsWithTrailingZeroes()
         {
-            var parsed = JsonConvert.DeserializeObject<Duration>("\"25:10:00.1234000\"", NodaFormatters.DurationFormatter);
+            var parsed = JsonSerializer.Deserialize<Duration>("\"25:10:00.1234000\"", CompositeResolver.Create(NodaFormatters.DurationFormatter));
             Assert.Equal(Duration.FromHours(25) + Duration.FromMinutes(10) + Duration.FromTicks(1234000), parsed);
-        }*/
+        }
     }
 }

@@ -19,8 +19,10 @@ namespace NodaTime.Serialization.Utf8Json
             _resolverCache = new Dictionary<Type, IJsonFormatter>
             {
                 {typeof(ZonedDateTime), NodaFormatters.CreateZonedDateTimeFormatter(dateTimeZoneProvider)},
+                {typeof(ZonedDateTime?), NodaFormatters.CreateNullableZonedDateTimeFormatter(dateTimeZoneProvider)},
                 {typeof(DateTimeZone), NodaFormatters.CreateDateTimeZoneFormatter(dateTimeZoneProvider)},
                 {typeof(Interval), isoIntervals ? NodaFormatters.IsoIntervalFormatter : NodaFormatters.IsoDateIntervalFormatter},
+                {typeof(Interval?), NodaFormatters.NullableIntervalFormatter},
                 {typeof(DateInterval), isoDateIntervals ? NodaFormatters.IsoDateIntervalFormatter : NodaFormatters.DateIntervalFormatter},
                 {typeof(Period), normalizedIsoPeriods ? NodaFormatters.NormalizingIsoPeriodFormatter : NodaFormatters.RoundtripPeriodFormatter}
             };
@@ -42,7 +44,7 @@ namespace NodaTime.Serialization.Utf8Json
 
             static FormatterCache()
             {
-                Formatter = (IJsonFormatter<T>)NodaTimeResolverHelper.GetFormatter(typeof(T));
+                Formatter = (IJsonFormatter<T>)NodaTimeResolverHelper.GetFormatterWithVerify(typeof(T));
             }
         }
     }
@@ -52,15 +54,22 @@ namespace NodaTime.Serialization.Utf8Json
         static readonly Dictionary<Type, IJsonFormatter> DefaultFormatterMap = new Dictionary<Type, IJsonFormatter>
         {
             {typeof(Instant), NodaFormatters.InstantFormatter},
+            {typeof(Instant?), NodaFormatters.NullableInstantFormatter},
             {typeof(LocalDate), NodaFormatters.LocalDateFormatter},
+            {typeof(LocalDate?), NodaFormatters.NullableLocalDateFormatter},
             {typeof(LocalTime), NodaFormatters.LocalTimeFormatter},
+            {typeof(LocalTime?), NodaFormatters.NullableLocalTimeFormatter},
             {typeof(LocalDateTime), NodaFormatters.LocalDateTimeFormatter},
+            {typeof(LocalDateTime?), NodaFormatters.NullableLocalDateTimeFormatter},
             {typeof(Offset), NodaFormatters.OffsetFormatter},
+            {typeof(Offset?), NodaFormatters.NullableOffsetFormatter},
             {typeof(OffsetDateTime), NodaFormatters.OffsetDateTimeFormatter},
+            {typeof(OffsetDateTime?), NodaFormatters.NullableOffsetDateTimeFormatter},
             {typeof(Duration), NodaFormatters.DurationFormatter},
+            {typeof(Duration?), NodaFormatters.DurationFormatter},
         };
 
-        internal static object GetFormatter(Type t)
+        internal static object GetFormatterWithVerify(Type t)
         {
             IJsonFormatter formatter;
             return DefaultFormatterMap.TryGetValue(t, out formatter) ? formatter : null;

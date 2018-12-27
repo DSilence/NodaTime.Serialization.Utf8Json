@@ -1,16 +1,16 @@
 namespace NodaTime.Serialization.Utf8Json.Dto
 {
-    internal struct IntervalDtoStart
+    public struct IntervalDtoStart
     {
         public Instant Start { get; set; }
     }
 
-    internal struct IntervalDtoEnd
+    public struct IntervalDtoEnd
     {
         public Instant End { get; set; }
     }
 
-    internal struct IntervalDto
+    public struct IntervalDto
     {
         public Instant? Start { get; set; }
 

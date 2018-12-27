@@ -13,15 +13,24 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  version: 
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-- task: DotNetCoreCLI@2
+- task: PowerShell@2
   inputs:
-    command: test
-    projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-- script: dotnet pack /p:PackageVersion=$(version)  # define version variable elsewhere in your pipeline
+    targetType: 'filePath'
+    filePath: 'build.ps1'
+    arguments: '-configuration $(buildConfiguration) -target CI'
+    failOnStderr: true
+  displayName: 'Build'
+- task: PublishTestResults@2
+  inputs:
+   testResultsFormat: 'VSTest'
+   testResultFiles: '*.trx'
+   searchFolder: 'artifacts'
+  displayName: 'Publish Test results'
 - task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: 'artifacts'
+    artifactName: 'drop'
+    targetPath: '*.nupkg' 
+  displayName: 'Publish Artifacts'

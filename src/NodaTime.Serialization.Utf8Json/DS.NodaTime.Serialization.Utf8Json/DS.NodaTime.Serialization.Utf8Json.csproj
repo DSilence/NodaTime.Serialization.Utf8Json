@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+        <RootNamespace>DS.NodaTime.Serialization.Utf8Json</RootNamespace>
+        <Description>Provides serialization support between Noda Time and Utf8Json. A port of NodaTime.Serialization.JsonNet.</Description>
     </PropertyGroup>
 
     <ItemGroup>

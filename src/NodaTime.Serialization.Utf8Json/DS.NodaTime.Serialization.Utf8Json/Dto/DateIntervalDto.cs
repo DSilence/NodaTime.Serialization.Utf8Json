@@ -1,6 +1,6 @@
 namespace NodaTime.Serialization.Utf8Json.Dto
 {
-    public class DateIntervalDto
+    public struct DateIntervalDto
     {
         public LocalDate Start { get; set; }
 

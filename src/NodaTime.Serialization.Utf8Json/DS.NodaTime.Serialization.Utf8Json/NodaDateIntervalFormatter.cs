@@ -7,7 +7,12 @@ namespace NodaTime.Serialization.Utf8Json
     {
         public void Serialize(ref JsonWriter writer, DateInterval value, IJsonFormatterResolver formatterResolver)
         {
-            formatterResolver.GetFormatter<DateIntervalDto>().Serialize(ref writer, new DateIntervalDto
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            formatterResolver.GetFormatterWithVerify<DateIntervalDto>().Serialize(ref writer, new DateIntervalDto
             {
                 Start = value.Start,
                 End = value.End
@@ -16,7 +21,11 @@ namespace NodaTime.Serialization.Utf8Json
 
         public DateInterval Deserialize(ref JsonReader reader, IJsonFormatterResolver formatterResolver)
         {
-            var dto = formatterResolver.GetFormatter<DateIntervalDto>().Deserialize(ref reader, formatterResolver);
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            var dto = formatterResolver.GetFormatterWithVerify<DateIntervalDto>().Deserialize(ref reader, formatterResolver);
             return new DateInterval(dto.Start, dto.End);
         }
     }

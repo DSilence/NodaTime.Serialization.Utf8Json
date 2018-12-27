@@ -65,3 +65,5 @@ _UpgradeReport_Files/
 Desktop.ini
 .DS_Store
 
+/artifacts/
+/.tmp
