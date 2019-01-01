@@ -3,13 +3,18 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+strategy:
+  matrix:
+    windows:
+      imageName: 'vs2017-win2016'
+
 trigger:
 - master
 - develop
 - release/*
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: $(imageName)
 
 variables:
   buildConfiguration: 'Release'
@@ -25,7 +30,7 @@ steps:
 - task: PublishTestResults@2
   inputs:
    testResultsFormat: 'VSTest'
-   testResultFiles: '*.trx'
+   testResultsFiles: '*.trx'
    searchFolder: 'artifacts'
   displayName: 'Publish Test results'
 - task: PublishBuildArtifacts@1

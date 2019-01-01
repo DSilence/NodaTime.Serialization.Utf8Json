@@ -1,7 +1,8 @@
-using NodaTime.Serialization.Utf8Json.Dto;
+using DS.NodaTime.Serialization.Utf8Json.Dto;
+using NodaTime;
 using Utf8Json;
 
-namespace NodaTime.Serialization.Utf8Json
+namespace DS.NodaTime.Serialization.Utf8Json
 {
     public class NodaIntervalFormatter : IJsonFormatter<Interval>
     {

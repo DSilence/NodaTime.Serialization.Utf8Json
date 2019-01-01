@@ -1,4 +1,6 @@
-namespace NodaTime.Serialization.Utf8Json.Dto
+using NodaTime;
+
+namespace DS.NodaTime.Serialization.Utf8Json.Dto
 {
     public struct IntervalDtoStart
     {

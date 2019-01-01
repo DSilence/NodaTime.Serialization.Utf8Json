@@ -1,9 +1,10 @@
 using System;
+using NodaTime;
 using NodaTime.Text;
 using Utf8Json;
 using Utf8Json.Formatters;
 
-namespace NodaTime.Serialization.Utf8Json
+namespace DS.NodaTime.Serialization.Utf8Json
 {
     public class NodaFormatters
     {

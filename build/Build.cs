@@ -56,7 +56,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetTest(s => s
-                .SetProjectFile(Solution)
+                .SetProjectFile(Solution.GetProject("DS.NodaTime.Serialization.Utf8Json.Tests"))
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
                 .EnableNoRestore()
