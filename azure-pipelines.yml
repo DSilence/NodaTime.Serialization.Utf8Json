@@ -31,11 +31,10 @@ steps:
   inputs:
    testResultsFormat: 'VSTest'
    testResultsFiles: '*.trx'
-   searchFolder: 'artifacts'
+   searchFolder: 'artifacts/tests'
   displayName: 'Publish Test results'
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: 'artifacts'
-    artifactName: 'drop'
-    targetPath: '*.nupkg' 
+    pathtoPublish: 'artifacts/nuget'
+    artifactName: 'Nuget'
   displayName: 'Publish Artifacts'

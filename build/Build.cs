@@ -62,7 +62,7 @@ class Build : NukeBuild
                 .EnableNoRestore()
                 .SetLogger("trx")
                 .SetLogOutput(true)
-                .SetResultsDirectory(ArtifactsDirectory));
+                .SetResultsDirectory(ArtifactsDirectory / "tests"));
         });
 
     Target Pack => _ => _
@@ -74,7 +74,9 @@ class Build : NukeBuild
                 .EnableNoBuild()
                 .EnableNoRestore()
                 .SetVersion(GitVersion.NuGetVersionV2)
-                .SetOutputDirectory(ArtifactsDirectory));
+                .SetPackageProjectUrl("https://github.com/DSilence/NodaTime.Serialization.Utf8Json")
+                .SetPackageLicenseUrl("https://github.com/DSilence/NodaTime.Serialization.Utf8Json/blob/develop/LICENSE")
+                .SetOutputDirectory(ArtifactsDirectory / "nuget"));
         });
 
     Target Ci => _ => _
