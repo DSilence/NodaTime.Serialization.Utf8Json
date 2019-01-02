@@ -15,8 +15,6 @@ namespace DS.NodaTime.Serialization.Utf8Json
             bool isoDateIntervals = false,
             bool normalizedIsoPeriods = false)
         {
-            NodaFormatters.CreateDateTimeZoneFormatter(dateTimeZoneProvider);
-
             _resolverCache = new Dictionary<Type, IJsonFormatter>
             {
                 {typeof(ZonedDateTime), NodaFormatters.CreateZonedDateTimeFormatter(dateTimeZoneProvider)},
@@ -72,8 +70,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
 
         internal static object GetFormatterWithVerify(Type t)
         {
-            IJsonFormatter formatter;
-            return DefaultFormatterMap.TryGetValue(t, out formatter) ? formatter : null;
+            return DefaultFormatterMap.TryGetValue(t, out var formatter) ? formatter : null;
         }
     }
 }

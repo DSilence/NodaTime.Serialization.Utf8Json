@@ -16,6 +16,8 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly string Configuration = IsLocalBuild ? "Debug" : "Release";
 
+    [Parameter("Explicit framework to build")] readonly string Framework = null;
+
     [Solution("src/NodaTime.Serialization.Utf8Json/NodaTime.Serialization.Utf8Json.sln")] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
@@ -48,7 +50,9 @@ class Build : NukeBuild
                 .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
                 .SetFileVersion(GitVersion.GetNormalizedFileVersion())
                 .SetInformationalVersion(GitVersion.InformationalVersion)
-                .EnableNoRestore());
+                .SetFramework(Framework)
+                .EnableNoRestore()
+            );
         });
 
     Target Test => _ => _
@@ -62,6 +66,7 @@ class Build : NukeBuild
                 .EnableNoRestore()
                 .SetLogger("trx")
                 .SetLogOutput(true)
+                .SetFramework(Framework)
                 .SetResultsDirectory(ArtifactsDirectory / "tests"));
         });
 
@@ -74,11 +79,11 @@ class Build : NukeBuild
                 .EnableNoBuild()
                 .EnableNoRestore()
                 .SetVersion(GitVersion.NuGetVersionV2)
-                .SetPackageProjectUrl("https://github.com/DSilence/NodaTime.Serialization.Utf8Json")
-                .SetPackageLicenseUrl("https://github.com/DSilence/NodaTime.Serialization.Utf8Json/blob/develop/LICENSE")
                 .SetOutputDirectory(ArtifactsDirectory / "nuget"));
         });
 
+    Target CiNonWin => _ => _
+        .DependsOn(Test);
     Target Ci => _ => _
         .DependsOn(Pack, Test);
 

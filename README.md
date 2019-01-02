@@ -2,3 +2,26 @@
 
 # NodaTime.Serialization.Utf8Json
 A port of NodaTime.Serialization.JsonNet to utilize Utf8Json instead
+
+## Sample Usage
+
+```csharp
+using DS.NodaTime.Serialization.Utf8Json;
+using NodaTime;
+using Utf8Json;
+using Utf8Json.Resolvers;
+
+namespace ConsoleApp1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+           CompositeResolver.RegisterAndSetAsDefault(
+                new NodaTimeResolver(DateTimeZoneProviders.Tzdb, true, true, true),
+                StandardResolver.ExcludeNullCamelCase);
+            var json = JsonSerializer.ToJsonString(new LocalDate(2019, 1, 1);
+        }
+    }
+}
+```
