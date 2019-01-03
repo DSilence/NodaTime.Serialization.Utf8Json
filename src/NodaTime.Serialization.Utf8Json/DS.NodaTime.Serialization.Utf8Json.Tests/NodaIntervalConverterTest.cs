@@ -7,7 +7,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 {
     public class NodaIntervalConverterTest
     {
-        private static readonly IJsonFormatterResolver Settings = CompositeResolver.Create(new[]
+        private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.IntervalFormatter,
             NodaFormatters.NullableIntervalFormatter,
@@ -15,7 +15,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             NodaFormatters.NullableInstantFormatter
         }, new[] {StandardResolver.Default});
 
-        private static readonly IJsonFormatterResolver SettingsCamelCase = CompositeResolver.Create(new[]
+        private static readonly IJsonFormatterResolver ResolverCamelCase = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.IntervalFormatter,
             NodaFormatters.NullableIntervalFormatter,
@@ -29,16 +29,16 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var startInstant = Instant.FromUtc(2012, 1, 2, 3, 4, 5) + Duration.FromMilliseconds(670);
             var endInstant = Instant.FromUtc(2013, 6, 7, 8, 9, 10) + Duration.FromNanoseconds(123456789);
             var interval = new Interval(startInstant, endInstant);
-            TestHelper.AssertConversions(interval, "{\"Start\":\"2012-01-02T03:04:05.67Z\",\"End\":\"2013-06-07T08:09:10.123456789Z\"}", Settings);
+            TestHelper.AssertConversions(interval, "{\"Start\":\"2012-01-02T03:04:05.67Z\",\"End\":\"2013-06-07T08:09:10.123456789Z\"}", Resolver);
         }
 
         [Fact]
         public void RoundTrip_Infinite()
         {
             var instant = Instant.FromUtc(2013, 6, 7, 8, 9, 10) + Duration.FromNanoseconds(123456789);
-            TestHelper.AssertConversions(new Interval(null, instant), "{\"End\":\"2013-06-07T08:09:10.123456789Z\"}", Settings);
-            TestHelper.AssertConversions(new Interval(instant, null), "{\"Start\":\"2013-06-07T08:09:10.123456789Z\"}", Settings);
-            TestHelper.AssertConversions(new Interval(null, null), "{}", Settings);
+            TestHelper.AssertConversions(new Interval(null, instant), "{\"End\":\"2013-06-07T08:09:10.123456789Z\"}", Resolver);
+            TestHelper.AssertConversions(new Interval(instant, null), "{\"Start\":\"2013-06-07T08:09:10.123456789Z\"}", Resolver);
+            TestHelper.AssertConversions(new Interval(null, null), "{}", Resolver);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 
             var testObject = new TestObject { Interval = interval };
 
-            var json = JsonSerializer.ToJsonString(testObject, Settings);
+            var json = JsonSerializer.ToJsonString(testObject, Resolver);
 
             var expectedJson = "{\"Interval\":{\"Start\":\"2012-01-02T03:04:05Z\",\"End\":\"2013-06-07T08:09:10Z\"}}";
             Assert.Equal(expectedJson, json);
@@ -65,7 +65,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 
             var testObject = new TestObject { Interval = interval };
 
-            var json = JsonSerializer.ToJsonString(testObject,  SettingsCamelCase);
+            var json = JsonSerializer.ToJsonString(testObject,  ResolverCamelCase);
 
             var expectedJson = "{\"interval\":{\"start\":\"2012-01-02T03:04:05Z\",\"end\":\"2013-06-07T08:09:10Z\"}}";
             Assert.Equal(expectedJson, json);
@@ -76,7 +76,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             var json = "{\"Interval\":{\"Start\":\"2012-01-02T03:04:05Z\",\"End\":\"2013-06-07T08:09:10Z\"}}";
 
-            var testObject = JsonSerializer.Deserialize<TestObject>(json, Settings);
+            var testObject = JsonSerializer.Deserialize<TestObject>(json, Resolver);
 
             var interval = testObject.Interval;
 
@@ -91,7 +91,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             var json = "{\"interval\":{\"start\":\"2012-01-02T03:04:05Z\",\"end\":\"2013-06-07T08:09:10Z\"}}";
 
-            var testObject = JsonSerializer.Deserialize<TestObject>(json, SettingsCamelCase);
+            var testObject = JsonSerializer.Deserialize<TestObject>(json, ResolverCamelCase);
 
             var interval = testObject.Interval;
 

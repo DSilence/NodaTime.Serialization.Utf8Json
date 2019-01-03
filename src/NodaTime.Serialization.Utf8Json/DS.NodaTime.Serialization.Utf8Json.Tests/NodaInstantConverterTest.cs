@@ -9,7 +9,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 {
     public class NodaInstantConverterTest
     {
-        private static readonly IJsonFormatterResolver Settings = CompositeResolver.Create(new IJsonFormatter[]
+        private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.InstantFormatter,
             NodaFormatters.NullableInstantFormatter
@@ -19,7 +19,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Serialize_NonNullableType()
         {
             var instant = Instant.FromUtc(2012, 1, 2, 3, 4, 5);
-            var json = JsonSerializer.ToJsonString(instant, Settings);
+            var json = JsonSerializer.ToJsonString(instant, Resolver);
             var expectedJson = "\"2012-01-02T03:04:05Z\"";
             Assert.Equal(expectedJson, json);
         }
@@ -28,7 +28,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Serialize_NullableType_NonNullValue()
         {
             Instant? instant = Instant.FromUtc(2012, 1, 2, 3, 4, 5);
-            var json = JsonSerializer.ToJsonString(instant, Settings);
+            var json = JsonSerializer.ToJsonString(instant, Resolver);
             var expectedJson = "\"2012-01-02T03:04:05Z\"";
             Assert.Equal(expectedJson, json);
         }
@@ -37,7 +37,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Serialize_NullableType_NullValue()
         {
             Instant? instant = null;
-            var json = JsonSerializer.ToJsonString(instant, Settings);
+            var json = JsonSerializer.ToJsonString(instant, Resolver);
             var expectedJson = "null";
             Assert.Equal(expectedJson, json);
         }
@@ -46,7 +46,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Deserialize_ToNonNullableType()
         {
             var json = "\"2012-01-02T03:04:05Z\"";
-            var instant = JsonSerializer.Deserialize<Instant>(json, Settings);
+            var instant = JsonSerializer.Deserialize<Instant>(json, Resolver);
             var expectedInstant = Instant.FromUtc(2012, 1, 2, 3, 4, 5);
             Assert.Equal(expectedInstant, instant);
         }
@@ -55,7 +55,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Deserialize_ToNullableType_NonNullValue()
         {
             var json = "\"2012-01-02T03:04:05Z\"";
-            var instant = JsonSerializer.Deserialize<Instant?>(json, Settings);
+            var instant = JsonSerializer.Deserialize<Instant?>(json, Resolver);
             Instant? expectedInstant = Instant.FromUtc(2012, 1, 2, 3, 4, 5);
             Assert.Equal(expectedInstant, instant);
         }
@@ -64,7 +64,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         public void Deserialize_ToNullableType_NullValue()
         {
             var json = "null";
-            var instant = JsonSerializer.Deserialize<Instant?>(json, Settings);
+            var instant = JsonSerializer.Deserialize<Instant?>(json, Resolver);
             Assert.Null(instant);
         }
         
@@ -74,7 +74,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var dateTime = new DateTime(2012, 1, 2, 3, 4, 5, DateTimeKind.Utc);
             var instant = Instant.FromDateTimeUtc(dateTime);
             var jsonDateTime = JsonSerializer.ToJsonString(dateTime, CompositeResolver.Create(new ISO8601DateTimeFormatter()));
-            var jsonInstant = JsonSerializer.ToJsonString(instant, Settings);
+            var jsonInstant = JsonSerializer.ToJsonString(instant, Resolver);
             Assert.Equal(jsonDateTime, jsonInstant);
         }
     }

@@ -8,12 +8,12 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 {
     public class NodaDateIntervalFormatterTest
     {
-        private static readonly IJsonFormatterResolver Settings = CompositeResolver.Create(new[]
+        private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.DateIntervalFormatter, NodaFormatters.LocalDateFormatter
         }, new[] { StandardResolver.Default });
 
-        private static readonly IJsonFormatterResolver SettingsCamelCase = CompositeResolver.Create(new[]
+        private static readonly IJsonFormatterResolver SettingsCamelCase = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.DateIntervalFormatter, NodaFormatters.LocalDateFormatter
         }, new[] { StandardResolver.CamelCase });
@@ -24,7 +24,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var startLocalDate = new LocalDate(2012, 1, 2);
             var endLocalDate = new LocalDate(2013, 6, 7);
             var dateInterval = new DateInterval(startLocalDate, endLocalDate);
-            AssertConversions(dateInterval, "{\"Start\":\"2012-01-02\",\"End\":\"2013-06-07\"}", Settings);
+            AssertConversions(dateInterval, "{\"Start\":\"2012-01-02\",\"End\":\"2013-06-07\"}", Resolver);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 
             var testObject = new TestObject { Interval = dateInterval };
 
-            var json = JsonSerializer.ToJsonString(testObject, Settings);
+            var json = JsonSerializer.ToJsonString(testObject, Resolver);
 
             var expectedJson = "{\"Interval\":{\"Start\":\"2012-01-02\",\"End\":\"2013-06-07\"}}";
             Assert.Equal(expectedJson, json);
@@ -71,7 +71,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             var json = "{\"Interval\":{\"Start\":\"2012-01-02\",\"End\":\"2013-06-07\"}}";
 
-            var testObject = JsonSerializer.Deserialize<TestObject>(json, Settings);
+            var testObject = JsonSerializer.Deserialize<TestObject>(json, Resolver);
 
             var interval = testObject.Interval;
 

@@ -12,7 +12,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
     /// </summary>
     public class NodaIsoDateIntervalConverterTest
     {
-        private static readonly IJsonFormatterResolver Settings = CompositeResolver.Create(new[]
+        private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
             NodaFormatters.IsoDateIntervalFormatter, NodaFormatters.LocalDateFormatter
         }, new[] { StandardResolver.Default });
@@ -23,14 +23,14 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var startLocalDate = new LocalDate(2012, 1, 2);
             var endLocalDate = new LocalDate(2013, 6, 7);
             var dateInterval = new DateInterval(startLocalDate, endLocalDate);
-            AssertConversions(dateInterval, "\"2012-01-02/2013-06-07\"", Settings);
+            AssertConversions(dateInterval, "\"2012-01-02/2013-06-07\"", Resolver);
         }
 
         [Theory]
         [InlineData("\"2012-01-022013-06-07\"")]
         public void InvalidJson(string json)
         {
-            AssertInvalidJson<DateInterval>(json, Settings);
+            AssertInvalidJson<DateInterval>(json, Resolver);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
 
             var testObject = new TestObject { Interval = dateInterval };
 
-            var json = JsonSerializer.ToJsonString(testObject,  Settings);
+            var json = JsonSerializer.ToJsonString(testObject,  Resolver);
 
             var expectedJson = "{\"Interval\":\"2012-01-02/2013-06-07\"}";
             Assert.Equal(expectedJson, json);
@@ -53,7 +53,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         {
             var json = "{\"Interval\":\"2012-01-02/2013-06-07\"}";
 
-            var testObject = JsonSerializer.Deserialize<TestObject>(json, Settings);
+            var testObject = JsonSerializer.Deserialize<TestObject>(json, Resolver);
 
             var interval = testObject.Interval;
 

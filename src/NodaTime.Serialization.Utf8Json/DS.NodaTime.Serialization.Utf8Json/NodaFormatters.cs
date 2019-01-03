@@ -32,7 +32,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for nullable local dates, using the ISO-8601 date pattern.
         /// </summary>
-        public static IJsonFormatter NullableLocalDateFormatter { get; }
+        public static IJsonFormatter<LocalDate?> NullableLocalDateFormatter { get; }
             = new StaticNullableFormatter<LocalDate>(LocalDateFormatter);
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for intervals. This must be used in a serializer which also has an instant converter.
         /// </summary>
-        public static IJsonFormatter IntervalFormatter { get; } = new NodaIntervalFormatter();
+        public static IJsonFormatter<Interval> IntervalFormatter { get; } = new NodaIntervalFormatter();
 
         /// <summary>
         /// Formatter for intervals using extended ISO-8601 format, as output by <see cref="Interval.ToString"/>.
         /// </summary>
-        public static IJsonFormatter IsoIntervalFormatter { get; }
+        public static IJsonFormatter<Interval> IsoIntervalFormatter { get; }
             = new NodaIsoIntervalFormatter();
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for date intervals. This must be used in a serializer which also has a local date converter.
         /// </summary>
-        public static IJsonFormatter DateIntervalFormatter { get; } = new NodaDateIntervalFormatter();
+        public static IJsonFormatter<DateInterval> DateIntervalFormatter { get; } = new NodaDateIntervalFormatter();
 
         /// <summary>
         /// Formatter for date intervals using ISO-8601 format, as defined by <see cref="LocalDatePattern.Iso"/>.
         /// </summary>
-        public static IJsonFormatter IsoDateIntervalFormatter { get; }
+        public static IJsonFormatter<DateInterval> IsoDateIntervalFormatter { get; }
             = new NodaIsoDateIntervalFormatter();
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
                 {typeof(ZonedDateTime), NodaFormatters.CreateZonedDateTimeFormatter(dateTimeZoneProvider)},
                 {typeof(ZonedDateTime?), NodaFormatters.CreateNullableZonedDateTimeFormatter(dateTimeZoneProvider)},
                 {typeof(DateTimeZone), NodaFormatters.CreateDateTimeZoneFormatter(dateTimeZoneProvider)},
-                {typeof(Interval), isoIntervals ? NodaFormatters.IsoIntervalFormatter : NodaFormatters.IsoDateIntervalFormatter},
+                {typeof(Interval), isoIntervals ? NodaFormatters.IsoIntervalFormatter : NodaFormatters.IntervalFormatter},
                 {typeof(Interval?), NodaFormatters.NullableIntervalFormatter},
                 {typeof(DateInterval), isoDateIntervals ? NodaFormatters.IsoDateIntervalFormatter : NodaFormatters.DateIntervalFormatter},
                 {typeof(Period), normalizedIsoPeriods ? NodaFormatters.NormalizingIsoPeriodFormatter : NodaFormatters.RoundtripPeriodFormatter}
@@ -65,7 +65,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
             {typeof(OffsetDateTime), NodaFormatters.OffsetDateTimeFormatter},
             {typeof(OffsetDateTime?), NodaFormatters.NullableOffsetDateTimeFormatter},
             {typeof(Duration), NodaFormatters.DurationFormatter},
-            {typeof(Duration?), NodaFormatters.DurationFormatter},
+            {typeof(Duration?), NodaFormatters.NullableDurationFormatter},
         };
 
         internal static object GetFormatterWithVerify(Type t)
