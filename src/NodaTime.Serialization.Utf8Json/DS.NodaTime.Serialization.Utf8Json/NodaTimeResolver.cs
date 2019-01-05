@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DS.NodaTime.Serialization.Utf8Json.Enums;
 using NodaTime;
 using Utf8Json;
 
@@ -11,6 +12,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
 
         public NodaTimeResolver(
             IDateTimeZoneProvider dateTimeZoneProvider,
+            NameHandling nameHandling = NameHandling.Ordinal,
             bool isoIntervals = false,
             bool isoDateIntervals = false,
             bool normalizedIsoPeriods = false)
@@ -20,9 +22,9 @@ namespace DS.NodaTime.Serialization.Utf8Json
                 {typeof(ZonedDateTime), NodaFormatters.CreateZonedDateTimeFormatter(dateTimeZoneProvider)},
                 {typeof(ZonedDateTime?), NodaFormatters.CreateNullableZonedDateTimeFormatter(dateTimeZoneProvider)},
                 {typeof(DateTimeZone), NodaFormatters.CreateDateTimeZoneFormatter(dateTimeZoneProvider)},
-                {typeof(Interval), isoIntervals ? NodaFormatters.IsoIntervalFormatter : NodaFormatters.IntervalFormatter},
+                {typeof(Interval), isoIntervals ? NodaFormatters.IsoIntervalFormatter : NodaFormatters.CreateIntervalFormatter(nameHandling)},
                 {typeof(Interval?), NodaFormatters.NullableIntervalFormatter},
-                {typeof(DateInterval), isoDateIntervals ? NodaFormatters.IsoDateIntervalFormatter : NodaFormatters.DateIntervalFormatter},
+                {typeof(DateInterval), isoDateIntervals ? NodaFormatters.IsoDateIntervalFormatter : NodaFormatters.CreateDateIntervalFormatter(nameHandling)},
                 {typeof(Period), normalizedIsoPeriods ? NodaFormatters.NormalizingIsoPeriodFormatter : NodaFormatters.RoundtripPeriodFormatter}
             };
         }

@@ -20,7 +20,7 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
            CompositeResolver.RegisterAndSetAsDefault(
-                new NodaTimeResolver(DateTimeZoneProviders.Tzdb, true, true, true),
+                new NodaTimeResolver(DateTimeZoneProviders.Tzdb, NameHandling.CamelCase, true, true, true),
                 StandardResolver.ExcludeNullCamelCase);
             var json = JsonSerializer.ToJsonString(new LocalDate(2019, 1, 1);
         }

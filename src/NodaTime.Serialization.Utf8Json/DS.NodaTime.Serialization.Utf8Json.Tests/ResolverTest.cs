@@ -1,4 +1,5 @@
 using DS.NodaTime.Serialization.Utf8Json;
+using DS.NodaTime.Serialization.Utf8Json.Enums;
 using Utf8Json;
 using Utf8Json.Resolvers;
 using Xunit;
@@ -13,10 +14,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var configuredResolver = CompositeResolver.Create(new NodaTimeResolver(DateTimeZoneProviders.Tzdb),
                 StandardResolver.Default);
             var explicitResolver =
-                CompositeResolver.Create(new IJsonFormatter[]
-                        {NodaFormatters.IntervalFormatter, NodaFormatters.NullableInstantFormatter},
-                    new[] {StandardResolver.Default}
-                );
+                CompositeResolver.Create(NodaFormatters.CreateIntervalFormatter(NameHandling.Ordinal), NodaFormatters.InstantFormatter);
 
             var interval = new Interval(Instant.FromUnixTimeTicks(1000L), Instant.FromUnixTimeTicks(20000L));
             Assert.Equal(Serialize(interval, explicitResolver),
@@ -26,7 +24,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
         [Fact]
         public void Resolver_WithIsoIntervalFormatter()
         {
-            var configuredResolver = CompositeResolver.Create(new NodaTimeResolver(DateTimeZoneProviders.Tzdb, true), StandardResolver.Default);
+            var configuredResolver = CompositeResolver.Create(new NodaTimeResolver(DateTimeZoneProviders.Tzdb, isoIntervals: true), StandardResolver.Default);
             var explicitResolver = CompositeResolver.Create(new IJsonFormatter[] {NodaFormatters.IsoIntervalFormatter},
                 new[] {StandardResolver.Default});
             var interval = new Interval(Instant.FromUnixTimeTicks(1000L), Instant.FromUnixTimeTicks(20000L));
@@ -40,9 +38,7 @@ namespace NodaTime.Serialization.Utf8Json.Tests
             var configuredResolver = CompositeResolver.Create(new NodaTimeResolver(DateTimeZoneProviders.Tzdb),
                 StandardResolver.Default);
             var explicitResolver =
-                CompositeResolver.Create(
-                    new IJsonFormatter[] {NodaFormatters.DateIntervalFormatter, NodaFormatters.LocalDateFormatter},
-                    new[] {StandardResolver.Default});
+                CompositeResolver.Create(NodaFormatters.CreateDateIntervalFormatter(NameHandling.Ordinal), NodaFormatters.LocalDateFormatter);
             var interval = new DateInterval(new LocalDate(2001, 2, 3), new LocalDate(2004, 5, 6));
             Assert.Equal(Serialize(interval, explicitResolver),
                 Serialize(interval, configuredResolver));

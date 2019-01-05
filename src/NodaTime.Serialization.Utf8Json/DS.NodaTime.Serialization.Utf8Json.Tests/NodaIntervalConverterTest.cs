@@ -1,4 +1,5 @@
 using DS.NodaTime.Serialization.Utf8Json;
+using DS.NodaTime.Serialization.Utf8Json.Enums;
 using Utf8Json;
 using Utf8Json.Resolvers;
 using Xunit;
@@ -9,19 +10,19 @@ namespace NodaTime.Serialization.Utf8Json.Tests
     {
         private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
-            NodaFormatters.IntervalFormatter,
+            NodaFormatters.CreateIntervalFormatter(NameHandling.Ordinal),
             NodaFormatters.NullableIntervalFormatter,
             NodaFormatters.InstantFormatter,
             NodaFormatters.NullableInstantFormatter
-        }, new[] {StandardResolver.Default});
+        }, new [] {StandardResolver.Default});
 
         private static readonly IJsonFormatterResolver ResolverCamelCase = CompositeResolver.Create(new IJsonFormatter[]
         {
-            NodaFormatters.IntervalFormatter,
+            NodaFormatters.CreateIntervalFormatter(NameHandling.CamelCase),
             NodaFormatters.NullableIntervalFormatter,
             NodaFormatters.InstantFormatter,
             NodaFormatters.NullableInstantFormatter
-        }, new[] { StandardResolver.CamelCase });
+        }, new [] {StandardResolver.CamelCase});
 
         [Fact]
         public void RoundTrip()

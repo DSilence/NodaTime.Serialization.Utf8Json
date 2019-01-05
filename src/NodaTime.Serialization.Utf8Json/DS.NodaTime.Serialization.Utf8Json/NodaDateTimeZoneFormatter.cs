@@ -1,5 +1,6 @@
 using NodaTime;
 using Utf8Json;
+using Utf8Json.Resolvers;
 
 namespace DS.NodaTime.Serialization.Utf8Json
 {

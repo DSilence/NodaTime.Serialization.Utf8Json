@@ -1,4 +1,5 @@
 using DS.NodaTime.Serialization.Utf8Json;
+using DS.NodaTime.Serialization.Utf8Json.Enums;
 using Utf8Json;
 using Utf8Json.Resolvers;
 using Xunit;
@@ -10,12 +11,12 @@ namespace NodaTime.Serialization.Utf8Json.Tests
     {
         private static readonly IJsonFormatterResolver Resolver = CompositeResolver.Create(new IJsonFormatter[]
         {
-            NodaFormatters.DateIntervalFormatter, NodaFormatters.LocalDateFormatter
+            NodaFormatters.CreateDateIntervalFormatter(NameHandling.Ordinal), NodaFormatters.LocalDateFormatter
         }, new[] { StandardResolver.Default });
 
         private static readonly IJsonFormatterResolver SettingsCamelCase = CompositeResolver.Create(new IJsonFormatter[]
         {
-            NodaFormatters.DateIntervalFormatter, NodaFormatters.LocalDateFormatter
+            NodaFormatters.CreateDateIntervalFormatter(NameHandling.CamelCase), NodaFormatters.LocalDateFormatter
         }, new[] { StandardResolver.CamelCase });
 
         [Fact]

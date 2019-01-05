@@ -1,4 +1,5 @@
 using System;
+using DS.NodaTime.Serialization.Utf8Json.Enums;
 using NodaTime;
 using NodaTime.Text;
 using Utf8Json;
@@ -65,7 +66,8 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for intervals. This must be used in a serializer which also has an instant converter.
         /// </summary>
-        public static IJsonFormatter<Interval> IntervalFormatter { get; } = new NodaIntervalFormatter();
+        public static IJsonFormatter<Interval> CreateIntervalFormatter(NameHandling nameHandling) =>
+            new NodaIntervalFormatter(GetNameMutator(nameHandling));
 
         /// <summary>
         /// Formatter for intervals using extended ISO-8601 format, as output by <see cref="Interval.ToString"/>.
@@ -81,7 +83,8 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <summary>
         /// Formatter for date intervals. This must be used in a serializer which also has a local date converter.
         /// </summary>
-        public static IJsonFormatter<DateInterval> DateIntervalFormatter { get; } = new NodaDateIntervalFormatter();
+        public static IJsonFormatter<DateInterval> CreateDateIntervalFormatter(NameHandling nameHandling)
+            => new NodaDateIntervalFormatter(GetNameMutator(nameHandling));
 
         /// <summary>
         /// Formatter for date intervals using ISO-8601 format, as defined by <see cref="LocalDatePattern.Iso"/>.
@@ -121,7 +124,8 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <returns>A converter to handle <see cref="ZonedDateTime"/>.</returns>
         public static IJsonFormatter<ZonedDateTime> CreateZonedDateTimeFormatter(IDateTimeZoneProvider provider) =>
             new NodaPatternFormatter<ZonedDateTime>(
-                ZonedDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss;FFFFFFFFFo<G> z", provider),
+                ZonedDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss;FFFFFFFFFo<G> z",
+                    provider),
                 CreateIsoValidator<ZonedDateTime>(x => x.Calendar));
 
 
@@ -130,7 +134,8 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// </summary>
         /// <param name="provider">The time zone provider to use when parsing.</param>
         /// <returns>A converter to handle <see cref="ZonedDateTime"/>.</returns>
-        public static IJsonFormatter<ZonedDateTime?> CreateNullableZonedDateTimeFormatter(IDateTimeZoneProvider provider) =>
+        public static IJsonFormatter<ZonedDateTime?> CreateNullableZonedDateTimeFormatter(
+            IDateTimeZoneProvider provider) =>
             new StaticNullableFormatter<ZonedDateTime>(CreateZonedDateTimeFormatter(provider));
 
 
@@ -175,8 +180,24 @@ namespace DS.NodaTime.Serialization.Utf8Json
             // We rely on CalendarSystem.Iso being a singleton here.
             if (calendar != CalendarSystem.Iso)
             {
-                throw new ArgumentException("Values of type {0} must (currently) use the ISO calendar in order to be serialized.", typeof(T).Name);
+                throw new ArgumentException(
+                    "Values of type {0} must (currently) use the ISO calendar in order to be serialized.",
+                    typeof(T).Name);
             }
         };
+
+        private static Func<string, string> GetNameMutator(NameHandling nameHandling)
+        {
+            switch (nameHandling)
+            {
+                case NameHandling.Ordinal:
+                    return StringMutator.Original;
+                case NameHandling.CamelCase:
+                    return StringMutator.ToCamelCase;
+                case NameHandling.SnakeCase:
+                    return StringMutator.ToSnakeCase;
+            }
+            throw new ArgumentException($"Invalid name handling selected. Expected one of {string.Join(",", Enum.GetNames(typeof(NameHandling)))}");
+        }
     }
 }
