@@ -21,6 +21,12 @@ jobs:
         testResultsFiles: '*.trx'
         searchFolder: '$(Build.SourcesDirectory)/artifacts/tests'
       displayName: 'Publish Test results'
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: "cobertura"
+        summaryFileLocation: "$(Build.SourcesDirectory)/artifacts/coverage/*.xml"
+        failIfCoverageEmpty: true
+      displayName: 'Publish Code Coverage'
 
 - job: Ubuntu
   pool:
@@ -57,6 +63,12 @@ jobs:
         testResultsFiles: '*.trx'
         searchFolder: '$(Build.SourcesDirectory)/artifacts/tests'
       displayName: 'Publish Test results'
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: "cobertura"
+        summaryFileLocation: "$(Build.SourcesDirectory)/artifacts/coverage/*.xml"
+        failIfCoverageEmpty: true
+      displayName: 'Publish Code Coverage'
     - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: '$(Build.SourcesDirectory)/artifacts/nuget'
