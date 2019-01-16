@@ -27,8 +27,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// Formatter for local dates, using the ISO-8601 date pattern.
         /// </summary>
         public static IJsonFormatter<LocalDate> LocalDateFormatter { get; }
-            = new NodaPatternFormatter<LocalDate>(
-                LocalDatePattern.Iso, CreateIsoValidator<LocalDate>(x => x.Calendar));
+            = new NodaLocalDateFormatter(CreateIsoValidator<LocalDate>(x => x.Calendar));
 
         /// <summary>
         /// Formatter for nullable local dates, using the ISO-8601 date pattern.
@@ -41,8 +40,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// No time zone designator is applied.
         /// </summary>
         public static IJsonFormatter<LocalDateTime> LocalDateTimeFormatter { get; }
-            = new NodaPatternFormatter<LocalDateTime>(
-                LocalDateTimePattern.ExtendedIso, CreateIsoValidator<LocalDateTime>(x => x.Calendar));
+            = new NodaLocalDateTimeFormatter(CreateIsoValidator<LocalDateTime>(x => x.Calendar));
 
         /// <summary>
         /// Formatter for nullable local dates and times, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks.
@@ -108,8 +106,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// Formatter for offset date/times.
         /// </summary>
         public static IJsonFormatter<OffsetDateTime> OffsetDateTimeFormatter { get; } =
-            new NodaPatternFormatter<OffsetDateTime>(
-                OffsetDateTimePattern.Rfc3339, CreateIsoValidator<OffsetDateTime>(x => x.Calendar));
+            new NodaOffsetDateTimeFormatter(CreateIsoValidator<OffsetDateTime>(x => x.Calendar));
 
         /// <summary>
         /// Formatter for nullable offset date/times.
