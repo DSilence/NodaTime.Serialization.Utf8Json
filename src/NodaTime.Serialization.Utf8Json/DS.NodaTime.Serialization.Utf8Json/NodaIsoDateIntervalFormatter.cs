@@ -16,20 +16,20 @@ namespace DS.NodaTime.Serialization.Utf8Json
 
         public DateInterval Deserialize(ref JsonReader reader, IJsonFormatterResolver formatterResolver)
         {
-            string text = reader.ReadString();
-            int slash = text.IndexOf('/');
+            var text = reader.ReadString();
+            var slash = text.IndexOf('/');
             if (slash == -1)
             {
                 throw new InvalidNodaDataException("Expected ISO-8601-formatted date interval; slash was missing.");
             }
 
-            string startText = text.Substring(0, slash);
+            var startText = text.Substring(0, slash);
             if (startText == "")
             {
                 throw new InvalidNodaDataException("Expected ISO-8601-formatted date interval; start date was missing.");
             }
 
-            string endText = text.Substring(slash + 1);
+            var endText = text.Substring(slash + 1);
             if (endText == "")
             {
                 throw new InvalidNodaDataException("Expected ISO-8601-formatted date interval; end date was missing.");

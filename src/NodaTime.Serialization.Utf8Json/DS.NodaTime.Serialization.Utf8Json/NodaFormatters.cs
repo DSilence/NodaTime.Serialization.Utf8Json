@@ -53,7 +53,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// Formatter for local times, using the ISO-8601 time pattern, extended as required to accommodate milliseconds and ticks.
         /// </summary>
         public static IJsonFormatter<LocalTime> LocalTimeFormatter { get; }
-            = new NodaPatternFormatter<LocalTime>(LocalTimePattern.ExtendedIso);
+            = new NodaLocalTimeFormatter();
 
         /// <summary>
         /// Formatter for nullable local times, using the ISO-8601 time pattern, extended as required to accommodate milliseconds and ticks.

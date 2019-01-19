@@ -6,12 +6,10 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
-using static Nuke.Common.Tools.Coverlet.CoverletTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 class Build : NukeBuild
 {
-
     public static int Main () => Execute<Build>(x => x.Ci);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
@@ -21,7 +19,7 @@ class Build : NukeBuild
 
     [Parameter("Collect code coverage. Default is 'true'")] readonly bool Cover = true;
 
-    [Parameter("Coverage threshold. Default is 80%")] readonly int Threshold;
+    [Parameter("Coverage threshold. Default is 80%")] readonly int Threshold = 80;
 
     [Solution("src/NodaTime.Serialization.Utf8Json/NodaTime.Serialization.Utf8Json.sln")] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
@@ -72,7 +70,7 @@ class Build : NukeBuild
                 .SetLogger("trx")
                 .SetLogOutput(true)
                 .SetFramework(Framework)
-                .SetArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}","true")
+                .SetArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}", Cover)
                     .Add("/p:CoverletOutput={0}/", ArtifactsDirectory / "coverage")
                     .Add("/p:Threshold={0}", Threshold)
                     .Add("/p:UseSourceLink={0}", "true")
@@ -84,7 +82,8 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            DotNetPack(Solution.GetProject("DS.NodaTime.Serialization.Utf8Json"), s => s
+            DotNetPack(s => s
+                .SetProject(Solution.GetProject("DS.NodaTime.Serialization.Utf8Json"))
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
                 .EnableNoRestore()
