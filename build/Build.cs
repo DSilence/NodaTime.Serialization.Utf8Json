@@ -17,7 +17,7 @@ class Build : NukeBuild
 
     [Parameter("Explicit framework to build")] readonly string Framework = null;
 
-    [Parameter("Collect code coverage. Default is 'true'")] readonly bool Cover = true;
+    [Parameter("Collect code coverage. Default is 'true'")] readonly bool? Cover = true;
 
     [Parameter("Coverage threshold. Default is 80%")] readonly int Threshold = 80;
 
