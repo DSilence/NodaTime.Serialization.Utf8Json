@@ -40,7 +40,6 @@ namespace DS.NodaTime.Serialization.Utf8Json
             var time = ReadTime(str, formatterResolver, ref i);
             var offset = ReadOffset(str, formatterResolver, ref i);
             return date.At(time).WithOffset(offset);
-
         }
     }
 }

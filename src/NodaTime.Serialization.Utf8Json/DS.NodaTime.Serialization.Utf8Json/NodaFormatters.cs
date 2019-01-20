@@ -14,7 +14,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// specifying 'Z' at the end to show it's effectively in UTC.
         /// </summary>
         public static IJsonFormatter<Instant> InstantFormatter { get; }
-            = new NodaPatternFormatter<Instant>(InstantPattern.ExtendedIso);
+            = new NodaInstantFormatter();
 
         /// <summary>
         /// Formatter for nullable instants, using the ISO-8601 date/time pattern, extended as required to accommodate milliseconds and ticks, and
@@ -134,7 +134,6 @@ namespace DS.NodaTime.Serialization.Utf8Json
         public static IJsonFormatter<ZonedDateTime?> CreateNullableZonedDateTimeFormatter(
             IDateTimeZoneProvider provider) =>
             new StaticNullableFormatter<ZonedDateTime>(CreateZonedDateTimeFormatter(provider));
-
 
         /// <summary>
         /// Formatter for durations.

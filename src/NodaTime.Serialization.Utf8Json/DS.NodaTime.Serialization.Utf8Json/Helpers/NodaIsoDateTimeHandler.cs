@@ -49,13 +49,14 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             writer.WriteInt32(day);
         }
 
-        internal static void WriteTime(ref JsonWriter writer, LocalTime value, IJsonFormatterResolver formatterResolver)
+        internal static void WriteTime(ref JsonWriter writer, LocalTime value, IJsonFormatterResolver formatterResolver,
+            bool omitZeros = false)
         {
             var hour = value.Hour;
             var minute = value.Minute;
             var second = value.Second;
             var nanosec = value.NanosecondOfSecond;
-             if (hour < 10)
+            if (hour < 10)
             {
                 writer.WriteRawUnsafe((byte)'0');
             }
@@ -145,7 +146,16 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
                     writer.WriteRawUnsafe((byte)'0');
                 }
 
-                writer.WriteInt64(nanosec);
+                if (!omitZeros)
+                {
+                    writer.WriteInt64(nanosec);
+                }
+                else
+                {
+                    // TODO should avoid using string, but serializing instant with nanosec is very rare, so it should be OK for now.
+                    var rawValue = JsonWriter.GetEncodedPropertyNameWithoutQuotation(nanosec.ToString().Trim('0'));
+                    writer.WriteRaw(rawValue);
+                }
             }
         }
 
@@ -225,7 +235,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             return new LocalDate(year, month, day);
         }
 
-        internal static LocalTime ReadTime(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
+        internal static LocalTime ReadTime(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i, bool omitZeros = false)
         {
             var array = str.Array;
             var hour = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
@@ -244,6 +254,13 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             i += readCount + 1;
             if (nanoseconds > 0)
             {
+                if (omitZeros)
+                {
+                    while (nanoseconds < 100_000_000)
+                    {
+                        nanoseconds = nanoseconds * 10;
+                    }
+                }
                 localDateTime = localDateTime.PlusNanoseconds(nanoseconds);
             }
 
@@ -269,7 +286,6 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
 
             var offset = minus ? Offset.FromHoursAndMinutes(-h, -m) : Offset.FromHoursAndMinutes(h, m);
             return offset;
-
         }
     }
 }
