@@ -14,11 +14,11 @@ namespace DS.NodaTime.Serialization.Utf8Json
             var offsetDateTime = value.WithOffset(Offset.Zero);
 
             // +{Hour}:{Minute}
-            writer.EnsureCapacity(baseLength + ((offsetDateTime.NanosecondOfSecond == 0) ? 0 : NanosecLength) + offsetLength);
+            writer.EnsureCapacity(baseLength + (offsetDateTime.NanosecondOfSecond == 0 ? 0 : NanosecLength) + offsetLength);
             writer.WriteRawUnsafe((byte)'\"');
             WriteDate(ref writer, offsetDateTime.Date, formatterResolver);
             writer.WriteRawUnsafe((byte)'T');
-            WriteTime(ref writer, offsetDateTime.TimeOfDay, formatterResolver, true);
+            WriteTime(ref writer, offsetDateTime.TimeOfDay, formatterResolver);
             WriteOffset(ref writer, offsetDateTime.Offset, formatterResolver);
             writer.WriteRawUnsafe((byte)'\"');
         }
@@ -29,7 +29,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
             var i = str.Offset;
             var date = ReadDate(str, formatterResolver, ref i);
             if (str.Array[i++] != (byte)'T') Exceptions.ThrowInvalidDateTimeFormat(str);
-            var time = ReadTime(str, formatterResolver, ref i, true);
+            var time = ReadTime(str, formatterResolver, ref i);
             var offset = ReadOffset(str, formatterResolver, ref i);
             if (offset != Offset.Zero)
             {

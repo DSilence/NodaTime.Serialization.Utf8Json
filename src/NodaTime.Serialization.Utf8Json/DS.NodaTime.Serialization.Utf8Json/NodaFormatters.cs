@@ -94,7 +94,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// Formatter for offsets.
         /// </summary>
         public static IJsonFormatter<Offset> OffsetFormatter { get; }
-            = new NodaPatternFormatter<Offset>(OffsetPattern.GeneralInvariant);
+            = new NodaOffsetFormatter();
 
         /// <summary>
         /// Formatter for nullable offsets.

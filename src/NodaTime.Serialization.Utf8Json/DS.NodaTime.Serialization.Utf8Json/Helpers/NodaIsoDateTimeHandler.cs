@@ -49,8 +49,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             writer.WriteInt32(day);
         }
 
-        internal static void WriteTime(ref JsonWriter writer, LocalTime value, IJsonFormatterResolver formatterResolver,
-            bool omitZeros = false)
+        internal static void WriteTime(ref JsonWriter writer, LocalTime value, IJsonFormatterResolver formatterResolver)
         {
             var hour = value.Hour;
             var minute = value.Minute;
@@ -146,16 +145,12 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
                     writer.WriteRawUnsafe((byte)'0');
                 }
 
-                if (!omitZeros)
+                while (nanosec % 10 == 0)
                 {
-                    writer.WriteInt64(nanosec);
+                    nanosec = nanosec / 10;
                 }
-                else
-                {
-                    // TODO should avoid using string, but serializing instant with nanosec is very rare, so it should be OK for now.
-                    var rawValue = JsonWriter.GetEncodedPropertyNameWithoutQuotation(nanosec.ToString().Trim('0'));
-                    writer.WriteRaw(rawValue);
-                }
+
+                writer.WriteInt32(nanosec);
             }
         }
 
@@ -235,7 +230,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             return new LocalDate(year, month, day);
         }
 
-        internal static LocalTime ReadTime(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i, bool omitZeros = false)
+        internal static LocalTime ReadTime(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
         {
             var array = str.Array;
             var hour = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
@@ -244,27 +239,26 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             if (array[i++] != (byte)':') Exceptions.ThrowInvalidDateTimeFormat(str);
             var second = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
 
-            var localDateTime = new LocalTime(hour, minute, second);
             if (i >= array.Length - 1)
             {
-                return localDateTime;
+                return new LocalTime(hour, minute, second);
             }
 
             var nanoseconds = NumberConverter.ReadInt64(array, i + 1, out var readCount);
             i += readCount + 1;
-            if (nanoseconds > 0)
+            if (nanoseconds <= 0)
             {
-                if (omitZeros)
-                {
-                    while (nanoseconds < 100_000_000)
-                    {
-                        nanoseconds = nanoseconds * 10;
-                    }
-                }
-                localDateTime = localDateTime.PlusNanoseconds(nanoseconds);
+                return new LocalTime(hour, minute, second);;
             }
 
-            return localDateTime;
+            // account for trailing zeroes
+            var times = 9 - readCount;
+            for (var j = 0; j < times; j++)
+            {
+                nanoseconds = nanoseconds * 10;
+            }
+
+            return LocalTime.FromHourMinuteSecondNanosecond(hour, minute, second, nanoseconds);
         }
 
         internal static Offset ReadOffset(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
