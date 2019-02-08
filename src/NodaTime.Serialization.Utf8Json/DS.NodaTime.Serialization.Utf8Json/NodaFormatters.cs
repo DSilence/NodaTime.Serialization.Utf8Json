@@ -136,7 +136,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// Formatter for durations.
         /// </summary>
         public static IJsonFormatter<Duration> DurationFormatter { get; }
-            = new NodaPatternFormatter<Duration>(DurationPattern.CreateWithInvariantCulture("-H:mm:ss.FFFFFFFFF"));
+            = new NodaDurationFormatter();
 
         /// <summary>
         /// Formatter for nullable durations.
