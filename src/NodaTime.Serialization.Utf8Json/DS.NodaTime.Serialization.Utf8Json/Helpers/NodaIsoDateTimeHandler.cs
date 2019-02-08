@@ -155,7 +155,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
         }
 
         internal static void WriteOffset(ref JsonWriter writer, Offset value,
-            IJsonFormatterResolver formatterResolver)
+            IJsonFormatterResolver formatterResolver, bool isExtendedIso = false)
         {
             if (value == Offset.Zero)
             {
@@ -176,13 +176,16 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
                 }
 
                 writer.WriteInt32(h);
-                writer.WriteRawUnsafe((byte)':');
-                if (m < 10)
+                if (!isExtendedIso || m > 0)
                 {
-                    writer.WriteRawUnsafe((byte)'0');
-                }
+                    writer.WriteRawUnsafe((byte)':');
+                    if (m < 10)
+                    {
+                        writer.WriteRawUnsafe((byte)'0');
+                    }
 
-                writer.WriteInt32(m);
+                    writer.WriteInt32(m);
+                }
             }
         }
 
@@ -244,30 +247,38 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
                 return new LocalTime(hour, minute, second);
             }
 
-            var nanoseconds = NumberConverter.ReadInt64(array, i + 1, out var readCount);
-            i += readCount + 1;
-            if (nanoseconds <= 0)
+            long nanoseconds = 0;
+            if (array[i] == (byte)'.')
             {
-                return new LocalTime(hour, minute, second);;
+                nanoseconds = NumberConverter.ReadInt64(array, ++i, out var readCount);
+                i += readCount;
+                // account for trailing zeroes
+                var times = 9 - readCount;
+                for (var j = 0; j < times; j++)
+                {
+                    nanoseconds = nanoseconds * 10;
+                }
             }
 
-            // account for trailing zeroes
-            var times = 9 - readCount;
-            for (var j = 0; j < times; j++)
-            {
-                nanoseconds = nanoseconds * 10;
-            }
-
-            return LocalTime.FromHourMinuteSecondNanosecond(hour, minute, second, nanoseconds);
+            return nanoseconds > 0
+                ? LocalTime.FromHourMinuteSecondNanosecond(hour, minute, second, nanoseconds)
+                : new LocalTime(hour, minute, second);
         }
 
         internal static Offset ReadOffset(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
         {
             var array = str.Array;
             var to = str.Offset + str.Count;
+            if (array[i] == 'Z')
+            {
+                // skip z and space
+                i++;
+                i++;
+                return Offset.Zero;
+            }
             if ((i >= to || array[i] != '-') && array[i] != '+')
             {
-                return Offset.Zero;
+                Exceptions.ThrowInvalidDateTimeFormat(str);
             }
 
             if (!(i + 5 < to)) Exceptions.ThrowInvalidDateTimeFormat(str);
@@ -275,8 +286,11 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             var minus = array[i++] == '-';
 
             var h = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
-            i++;
-            var m = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
+            var m = 0;
+            if (array[i++] == ':')
+            {
+                m = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
+            }
 
             var offset = minus ? Offset.FromHoursAndMinutes(-h, -m) : Offset.FromHoursAndMinutes(h, m);
             return offset;

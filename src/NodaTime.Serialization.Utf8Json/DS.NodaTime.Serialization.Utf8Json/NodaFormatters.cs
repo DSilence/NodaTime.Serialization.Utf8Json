@@ -120,10 +120,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// <param name="provider">The time zone provider to use when parsing.</param>
         /// <returns>A converter to handle <see cref="ZonedDateTime"/>.</returns>
         public static IJsonFormatter<ZonedDateTime> CreateZonedDateTimeFormatter(IDateTimeZoneProvider provider) =>
-            new NodaPatternFormatter<ZonedDateTime>(
-                ZonedDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss;FFFFFFFFFo<G> z",
-                    provider),
-                CreateIsoValidator<ZonedDateTime>(x => x.Calendar));
+            new NodaZonedDateTimeFormatter(provider, CreateIsoValidator<ZonedDateTime>(x => x.Calendar));
 
 
         /// <summary>

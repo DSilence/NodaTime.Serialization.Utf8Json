@@ -10,7 +10,14 @@ namespace DS.NodaTime.Serialization.Utf8Json
         public static void ThrowInvalidDateTimeFormat(ArraySegment<byte> str)
         {
             throw new InvalidOperationException("invalid datetime format. value:" +
-                                                Encoding.UTF8.GetString(str.Array, str.Offset, str.Count));
+                                                StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowInvalidTimeZone(ArraySegment<byte> str)
+        {
+            throw new InvalidOperationException("invalid timezone format. value:" +
+                                                StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
         }
     }
 }
