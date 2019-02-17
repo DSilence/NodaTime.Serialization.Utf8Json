@@ -19,5 +19,12 @@ namespace DS.NodaTime.Serialization.Utf8Json
             throw new InvalidOperationException("invalid timezone format. value:" +
                                                 StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowInvalidPeriodFormat(ArraySegment<byte> str)
+        {
+            throw new InvalidOperationException("invalid period format. value:" +
+                                                StringEncoding.UTF8.GetString(str.Array, str.Offset, str.Count));
+        }
     }
 }

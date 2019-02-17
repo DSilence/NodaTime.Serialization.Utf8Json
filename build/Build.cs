@@ -55,6 +55,7 @@ class Build : NukeBuild
                 .SetInformationalVersion(GitVersion.InformationalVersion)
                 .SetFramework(Framework)
                 .EnableNoRestore()
+
             );
         });
 

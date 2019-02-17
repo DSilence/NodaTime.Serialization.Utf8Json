@@ -149,7 +149,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// and don't need interoperability with systems expecting ISO.
         /// </summary>
         public static IJsonFormatter RoundtripPeriodFormatter { get; }
-            = new NodaPatternFormatter<Period>(PeriodPattern.Roundtrip);
+            = new NodaPeriodFormatter(false);
 
         /// <summary>
         /// Normalizing ISO converter for periods. Use this when you want compatibility with systems expecting
@@ -157,7 +157,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
         /// this converter losees information - after serialization and deserialization, "90 minutes" will become "an hour and 30 minutes".
         /// </summary>
         public static IJsonFormatter NormalizingIsoPeriodFormatter { get; }
-            = new NodaPatternFormatter<Period>(PeriodPattern.NormalizingIso);
+            = new NodaPeriodFormatter(true);
 
         /// <summary>
         /// Creates a converter for time zones, using the given provider.
