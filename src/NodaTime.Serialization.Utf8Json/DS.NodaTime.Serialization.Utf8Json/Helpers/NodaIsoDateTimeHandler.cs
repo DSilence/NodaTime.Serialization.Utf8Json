@@ -9,7 +9,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
     {
         public const int NanosecLength = 10;
 
-        internal static void WriteDate(ref JsonWriter writer, LocalDate value, IJsonFormatterResolver formatterResolver)
+        internal static void WriteDate(ref JsonWriter writer,in LocalDate value, IJsonFormatterResolver formatterResolver)
         {
             var year = value.Year;
             var month = value.Month;
@@ -49,7 +49,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             writer.WriteInt32(day);
         }
 
-        internal static void WriteTime(ref JsonWriter writer, LocalTime value, IJsonFormatterResolver formatterResolver)
+        internal static void WriteTime(ref JsonWriter writer,in LocalTime value, IJsonFormatterResolver formatterResolver)
         {
             var hour = value.Hour;
             var minute = value.Minute;
@@ -159,7 +159,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
         {
             if (value == Offset.Zero)
             {
-                writer.WriteRaw((byte)'Z');
+                writer.WriteRawUnsafe((byte)'Z');
             }
             else
             {
@@ -189,7 +189,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             }
         }
 
-        internal static LocalDate ReadDate(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
+        internal static LocalDate ReadDate(in ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
         {
             var array = str.Array;
             var len = str.Count;
@@ -233,7 +233,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
             return new LocalDate(year, month, day);
         }
 
-        internal static LocalTime ReadTime(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
+        internal static LocalTime ReadTime(in ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
         {
             var array = str.Array;
             var hour = (array[i++] - (byte)'0') * 10 + (array[i++] - (byte)'0');
@@ -265,7 +265,7 @@ namespace DS.NodaTime.Serialization.Utf8Json.Helpers
                 : new LocalTime(hour, minute, second);
         }
 
-        internal static Offset ReadOffset(ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
+        internal static Offset ReadOffset(in ArraySegment<byte> str, IJsonFormatterResolver formatterResolver, ref int i)
         {
             var array = str.Array;
             var to = str.Offset + str.Count;
