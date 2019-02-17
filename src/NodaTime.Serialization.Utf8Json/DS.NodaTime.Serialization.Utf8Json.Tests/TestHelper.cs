@@ -9,14 +9,13 @@ namespace NodaTime.Serialization.Utf8Json.Tests
     {
         internal static void AssertConversions<T>(T value, string expectedJson, params IJsonFormatterResolver[] formatterResolvers)
         {
-
             var actualJson = JsonSerializer.ToJsonString(value, CompositeResolver.Create(formatterResolvers));
             Assert.Equal(expectedJson, actualJson);
 
             var deserializedValue = JsonSerializer.Deserialize<T>(expectedJson, CompositeResolver.Create(formatterResolvers));
             Assert.Equal(value, deserializedValue);
         }
-        
+
         internal static void AssertConversions<T>(T value, string expectedJson, params IJsonFormatter[] formatter)
         {
 

@@ -1,10 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DS.NodaTime.Serialization.Utf8Json", "DS.NodaTime.Serialization.Utf8Json\DS.NodaTime.Serialization.Utf8Json.csproj", "{91DBAEAF-E41E-4AB3-996C-C6107415E88E}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DS.NodaTime.Serialization.Utf8Json", "DS.NodaTime.Serialization.Utf8Json\DS.NodaTime.Serialization.Utf8Json.csproj", "{91DBAEAF-E41E-4AB3-996C-C6107415E88E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DS.NodaTime.Serialization.Utf8Json.Tests", "DS.NodaTime.Serialization.Utf8Json.Tests\DS.NodaTime.Serialization.Utf8Json.Tests.csproj", "{1AD61E77-DFCF-4293-AB31-5A446307C670}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DS.NodaTime.Serialization.Utf8Json.Tests", "DS.NodaTime.Serialization.Utf8Json.Tests\DS.NodaTime.Serialization.Utf8Json.Tests.csproj", "{1AD61E77-DFCF-4293-AB31-5A446307C670}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\..\build\_build.csproj", "{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7960CC74-5859-4EEC-9F3C-B8725BA96200}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\README.md = ..\..\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{FECF21B4-B872-408D-9CC7-70A9D0B6B66A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,8 +22,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DBAEAF-E41E-4AB3-996C-C6107415E88E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -22,5 +30,17 @@ Global
 		{1AD61E77-DFCF-4293-AB31-5A446307C670}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AD61E77-DFCF-4293-AB31-5A446307C670}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AD61E77-DFCF-4293-AB31-5A446307C670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B88CFBF-EC10-4EEC-A57F-9DE2EF029E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FECF21B4-B872-408D-9CC7-70A9D0B6B66A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FECF21B4-B872-408D-9CC7-70A9D0B6B66A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FECF21B4-B872-408D-9CC7-70A9D0B6B66A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FECF21B4-B872-408D-9CC7-70A9D0B6B66A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D9B3884F-95F6-48D5-A13E-58F8760B4157}
 	EndGlobalSection
 EndGlobal
