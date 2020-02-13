@@ -79,7 +79,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
                 Exceptions.ThrowInvalidPeriodFormat(str);
             }
 
-            while (str.Array[i] != 'T' && i < str.Count)
+            while (str.Array[i] != 'T' && i - str.Offset < str.Count)
             {
                 var amount = NumberConverter.ReadInt32(str.Array, i, out var readCount);
                 i += readCount;
@@ -106,7 +106,7 @@ namespace DS.NodaTime.Serialization.Utf8Json
 
             if (str.Array[i++] == 'T')
             {
-                while (i < str.Count)
+                while (i - str.Offset < str.Count)
                 {
                     var amount = NumberConverter.ReadInt64(str.Array, i, out var readCount);
                     i += readCount;
