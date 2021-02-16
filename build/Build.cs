@@ -1,9 +1,11 @@
 using Nuke.Common;
 using Nuke.Common.Git;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -15,7 +17,7 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly string Configuration = IsLocalBuild ? "Debug" : "Release";
 
-    [Parameter("Explicit framework to build")] readonly string Framework = null;
+    [Parameter("Explicit framework to build")] readonly string Framework = "";
 
     [Parameter("Collect code coverage. Default is 'true'")] readonly bool? Cover = true;
 
@@ -23,7 +25,7 @@ class Build : NukeBuild
 
     [Solution("src/NodaTime.Serialization.Utf8Json/NodaTime.Serialization.Utf8Json.sln")] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -31,7 +33,7 @@ class Build : NukeBuild
     Target Clean => _ => _
         .Executes(() =>
         {
-            DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
+            GlobDirectories(SourceDirectory, "**/bin", "**/obj").ForEach(DeleteDirectory);
             EnsureCleanDirectory(ArtifactsDirectory);
         });
 
@@ -50,8 +52,8 @@ class Build : NukeBuild
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
-                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                .SetAssemblyVersion($"{GitVersion.Major}.{GitVersion.Minor}.0")
+                .SetFileVersion(GitVersion.MajorMinorPatch)
                 .SetInformationalVersion(GitVersion.InformationalVersion)
                 .SetFramework(Framework)
                 .EnableNoRestore()
@@ -69,9 +71,9 @@ class Build : NukeBuild
                 .EnableNoBuild()
                 .EnableNoRestore()
                 .SetLogger("trx")
-                .SetLogOutput(true)
+                .EnableProcessLogOutput()
                 .SetFramework(Framework)
-                .SetArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}", Cover)
+                .SetProcessArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}", Cover)
                     .Add("/p:CoverletOutput={0}/", ArtifactsDirectory / "coverage")
                     .Add("/p:Threshold={0}", Threshold)
                     .Add("/p:UseSourceLink={0}", "true")
