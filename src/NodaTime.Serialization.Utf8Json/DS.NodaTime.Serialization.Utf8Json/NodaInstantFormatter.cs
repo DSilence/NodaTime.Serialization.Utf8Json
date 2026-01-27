@@ -9,12 +9,12 @@ namespace DS.NodaTime.Serialization.Utf8Json
     {
         public void Serialize(ref JsonWriter writer, Instant value, IJsonFormatterResolver formatterResolver)
         {
-            /*const int baseLength = 19 + 2; // {YEAR}-{MONTH}-{DAY}T{Hour}:{Minute}:{Second} + quotation
-            const int offsetLength = 1;*/
+            const int baseLength = 19 + 2; // {YEAR}-{MONTH}-{DAY}T{Hour}:{Minute}:{Second} + quotation
+            const int offsetLength = 1;
             var offsetDateTime = value.WithOffset(Offset.Zero);
 
             // +{Hour}:{Minute}
-            //writer.EnsureCapacity(baseLength + (offsetDateTime.NanosecondOfSecond == 0 ? 0 : NanosecLength) + offsetLength);
+            writer.EnsureCapacity(baseLength + (offsetDateTime.NanosecondOfSecond == 0 ? 0 : NanosecLength) + offsetLength);
             writer.WriteRawUnsafe((byte)'\"');
             WriteDate(ref writer, offsetDateTime.Date, formatterResolver);
             writer.WriteRawUnsafe((byte)'T');
