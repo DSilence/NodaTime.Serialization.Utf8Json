@@ -14,7 +14,7 @@ jobs:
         inputs:
           targetType: 'filePath'
           filePath: 'build.sh'
-          arguments: '-configuration $(buildConfiguration) -target CiNonWin -framework netcoreapp2.1'
+          arguments: '-configuration $(buildConfiguration) -target CiNonWin -framework net10'
           failOnStderr: true
         displayName: 'Build'
       - task: PublishTestResults@2
@@ -39,7 +39,7 @@ jobs:
         inputs:
           targetType: 'filePath'
           filePath: 'build.sh'
-          arguments: '-configuration $(buildConfiguration) -target CiNonWin -framework netcoreapp2.1'
+          arguments: '-configuration $(buildConfiguration) -target CiNonWin -framework net10'
           failOnStderr: true
         displayName: 'Build'
       - task: PublishTestResults@2

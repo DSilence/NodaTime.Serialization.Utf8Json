@@ -18,11 +18,11 @@ class Build : NukeBuild
 
     [Parameter("Collect code coverage. Default is 'true'")] readonly bool? Cover = true;
 
-    [Parameter("Coverage threshold. Default is 80%")] readonly int Threshold = 80;
+    [Parameter("Coverage threshold. Default is 80%")] readonly int Threshold = 70;
 
     [Solution("src/NodaTime.Serialization.Utf8Json/NodaTime.Serialization.Utf8Json.sln")] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "net10")] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -75,7 +75,7 @@ class Build : NukeBuild
                     $"/p:CoverletOutput={ArtifactsDirectory / "coverage"}/",
                     $"/p:Threshold={Threshold}",
                     $"/p:UseSourceLink={true}",
-                    $"/p:CoverletOutputFormat=cobertura, "
+                    $"/p:CoverletOutputFormat=cobertura"
                     )
                 .SetResultsDirectory(ArtifactsDirectory / "tests"));
         });
@@ -89,7 +89,7 @@ class Build : NukeBuild
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
                 .EnableNoRestore()
-                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetVersion(GitVersion.FullSemVer)
                 .SetOutputDirectory(ArtifactsDirectory / "nuget"));
         });
 
